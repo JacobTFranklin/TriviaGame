@@ -4,10 +4,20 @@
      
 }
 
-
-
+#instructions {
+    text-align: center;
+}
 
 body {
     background-image: url("../images/abstract-astro-astronomy-956999.jpg");
     background-size: cover;
+}
+
+.question {
+    text-align: center;
+}
+
+.answer {
+    text-align: center;
+    margin:auto;
 }

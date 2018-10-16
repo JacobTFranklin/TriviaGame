@@ -124,6 +124,7 @@ questionArray = [Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10]
 
 
 var points = 0;
+
  
 var newQuestion;
 
@@ -136,6 +137,7 @@ var questionTimer = setTimeout(function(){
 function nextQuestion(inputQuestion){
     newQuestion = questionArray[inputQuestion + 1];
     currentQuestion++;
+    return newQuestion;
 }
 
 
@@ -144,12 +146,43 @@ $("#play").on("click", function(){
     $("#triviaTitle").hide();
     $("#play").hide();
     $("#instructions").hide();
+    writeQuestion();
     console.log(newQuestion);
     console.log(currentQuestion);
 });
 
-function restartGame(){
+function writeQuestion(){
+    $(".jumbotron").append("<div class='question'>" +newQuestion.question+ "</div><br class='spacing'>" );
+    $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.a+ "</a></center><br class='spacing'>");
+    $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.b+ "</a></center><br class='spacing'>");
+    $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.c+ "</a></center><br class='spacing'>");
+    $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.d+ "</a></center><br class='spacing'>");
+}
 
+$("body").on("click", ".answer", function(){
+    if(newQuestion.a == newQuestion.answer){
+        points++;
+        nextQuestion(currentQuestion);
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        writeQuestion();
+        console.log(points);
+    }
+    else{
+        nextQuestion(currentQuestion);
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        writeQuestion();
+        console.log(points);
+    }
+})
+
+function restartGame(){
+    $("#triviaTitle").show();
+    $("#play").show();
+    $("#instructions").show();
 }
 
 });
