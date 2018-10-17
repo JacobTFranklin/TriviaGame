@@ -257,6 +257,11 @@ function wrongAnswer(){
     $(".jumbotron").append("<h1 class='display-4 correct'><center>Wrong!</center></h1><br class='spacing'>" );
     $(".jumbotron").append("<div class='realAnswer'><center>The correct answer was: "+newQuestion.answer+"</center></div><br class='spacing'>" );
     setTimeout(function(){
+        $(".realAnswer").hide();
+        $(".correct").hide();
+        $(".timesUp").hide();
+        $(".quicker").hide();
+        $(".spacing").hide();
         nextQuestion(currentQuestion);
         writeQuestion();
         timer.reset();
@@ -316,9 +321,9 @@ $("body").on("click", ".again", function(){
 
 //Restarts a game by clicking the again button above
 function restartGame(){
-    $(".thanks").hide();
-    $(".score").hide();
-    $(".again").hide();
+    $(".thanks").remove();
+    $(".score").remvoe();
+    $(".again").remove();
     $(".spacing").hide();
     $("#triviaTitle").show();
     $("#play").show();
