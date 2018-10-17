@@ -80,7 +80,7 @@ var Q6 = {
     b: "Lake Baikal",
     c: "Lake Vostok",
     d: "Lake Malawi",
-    answer: "Lae Baikal"
+    answer: "Lake Baikal"
 }
 
 var Q7 = {
@@ -116,31 +116,84 @@ var Q10 = {
     b: "Ohio",
     c: "New York",
     d: "Texas",
-    answer: "Texas"
+    answer: "Virginia"
 }
 
 questionArray = [Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10]
 
-
+var gameOver = false;
 
 var points = 0;
 
- 
 var newQuestion;
 
 var currentQuestion = -1;
 
-var questionTimer = setTimeout(function(){
-    nextQuestion(currentQuestion);
-},30000);
+//Timer variables
+var clockRunning= false;
 
+var intervalID;
+
+//Timer object
+var timer = {
+    time: 10,
+
+reset: function() {
+    timer.time = 10;
+    $("#timer").html("10")
+},
+
+start: function() {
+    if (!clockRunning) {
+        intervalId = setInterval(timer.count, 1000);
+        clockRunning = true;
+    }    
+},
+
+count: function() {
+  timer.time--;
+  $("#timer").html(timer.time);
+  if(timer.time == 0 && gameOver == false){
+    timesUp();
+}}
+};
+
+//Triggers the timesUp screen when 30 seconds passes without answering
+function timesUp(){
+    $("#timer").hide();
+    $(".question").hide();
+    $(".answer").hide();
+    $(".spacing").hide();
+    $(".jumbotron").append("<h1 class='display-4 timesUp'><center>Time's up!</center></h1><br class='spacing'>" );
+    $(".jumbotron").append("<center><div class='quicker'>Gotta be quicker than that.</div></center><br class='spacing'>" );
+    $("#timesUp").show();
+    $("#quicker").show();
+    setTimeout(function(){
+        if(newQuestion == Q10){
+            $(".question").hide();
+            $(".answer").hide();
+            $(".spacing").hide();
+            $(".timesUp").hide();
+            $(".quicker").hide();
+            $(".spacing").hide();
+            endGame();
+        }
+        else{
+        nextQuestion(currentQuestion);
+        writeQuestion();
+        timer.reset();
+        }
+      }, 3000);
+}
+
+//Calculates what the next question/answer set will be
 function nextQuestion(inputQuestion){
     newQuestion = questionArray[inputQuestion + 1];
     currentQuestion++;
     return newQuestion;
 }
 
-
+//Starts the game
 $("#play").on("click", function(){
     nextQuestion(currentQuestion);
     $("#triviaTitle").hide();
@@ -149,40 +202,130 @@ $("#play").on("click", function(){
     writeQuestion();
     console.log(newQuestion);
     console.log(currentQuestion);
+    timer.reset();
 });
 
+//Writes out the current timer, question and answers to the jumbotron. Starts the timer.
 function writeQuestion(){
+    $(".realAnswer").hide();
+    $(".correct").hide();
+    $(".timesUp").hide();
+    $(".quicker").hide();
+    $(".spacing").hide();
+    $(".jumbotron").append("<center><div id='timer'></div></center>");
+    $("#timer").show();
+    timer.start();
     $(".jumbotron").append("<div class='question'>" +newQuestion.question+ "</div><br class='spacing'>" );
     $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.a+ "</a></center><br class='spacing'>");
     $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.b+ "</a></center><br class='spacing'>");
     $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.c+ "</a></center><br class='spacing'>");
-    $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.d+ "</a></center><br class='spacing'>");
-}
+    $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.d+ "</a></center>");
+};
 
-$("body").on("click", ".answer", function(){
-    if(newQuestion.a == newQuestion.answer){
-        points++;
+//Displays "correct" message after answering a question correctly
+function correctAnswer(){
+    if(newQuestion == Q10){
+        $("#timer").hide();
+        $(".jumbotron").append("<h1 class='display-4 correct'><center>Correct!</center></h1><br class='spacing'>" );
+        setTimeout(function(){
+        endGame();
+        }, 3000);
+    }
+    else{
+    $("#timer").hide();
+    $(".jumbotron").append("<h1 class='display-4 correct'><center>Correct!</center></h1><br class='spacing'>" );
+    setTimeout(function(){
         nextQuestion(currentQuestion);
+        writeQuestion();
+        timer.reset();
+    }, 3000);
+    }
+};
+
+//Displays when you answer wrong, and shows what the correct answer was
+function wrongAnswer(){
+    if(newQuestion == Q10){
+        $("#timer").hide();
+        $(".jumbotron").append("<h1 class='display-4 correct'><center>Wrong!</center></h1><br class='spacing'>" );
+        $(".jumbotron").append("<div class='realAnswer'><center>The correct answer was: "+newQuestion.answer+"</center></div><br class='spacing'>" );
+        setTimeout(function(){
+        endGame();
+        }, 3000);
+    }
+    else{
+    $("#timer").hide();
+    $(".jumbotron").append("<h1 class='display-4 correct'><center>Wrong!</center></h1><br class='spacing'>" );
+    $(".jumbotron").append("<div class='realAnswer'><center>The correct answer was: "+newQuestion.answer+"</center></div><br class='spacing'>" );
+    setTimeout(function(){
+        nextQuestion(currentQuestion);
+        writeQuestion();
+        timer.reset();
+    }, 3000)
+} 
+};
+
+//Answer clicking logic - logs a point if correct and advances to next question, unless last question
+$("body").on("click", ".answer", function(){
+    console.log('current Question='+currentQuestion);
+    var answerClicked= $(this).text();
+    console.log(answerClicked);
+    if(newQuestion == Q10 && answerClicked == Q10.answer){
+        points++;
         $(".question").hide();
         $(".answer").hide();
         $(".spacing").hide();
-        writeQuestion();
+        correctAnswer();
+    }
+    else if(newQuestion == Q10 && answerClicked != Q10.answer){
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        wrongAnswer();
+    }
+    else if(answerClicked == newQuestion.answer){
+        points++;
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        correctAnswer();
         console.log(points);
     }
     else{
-        nextQuestion(currentQuestion);
         $(".question").hide();
         $(".answer").hide();
         $(".spacing").hide();
-        writeQuestion();
-        console.log(points);
+        wrongAnswer();
     }
 })
 
+//Ends the game after answering all of the questions
+function endGame(){
+    gameOver = true;
+    $(".realAnswer").hide();
+    $(".correct").hide();
+    $("#timer").hide();
+    $(".jumbotron").append("<h1 class='display-4 thanks'><center>Thanks for playing!</center></h1><br class='spacing'>" );
+    $(".jumbotron").append("<center><div class='score'>You scored "+points+"/10 points!</div></center><br class='spacing'>");
+    $(".jumbotron").append("<center><a class='btn btn-primary btn-lg again' href='#' role='button'>Play again?</a></center>");
+}
+
+//Button to restart the game
+$("body").on("click", ".again", function(){
+    restartGame();
+});
+
+//Restarts a game by clicking the again button above
 function restartGame(){
+    $(".thanks").hide();
+    $(".score").hide();
+    $(".again").hide();
+    $(".spacing").hide();
     $("#triviaTitle").show();
     $("#play").show();
     $("#instructions").show();
+    points = 0;
+    currentQuestion = -1;
+    gameOver = false;
 }
 
 });
