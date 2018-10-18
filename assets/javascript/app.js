@@ -25,10 +25,11 @@
     //Pass points into div
 
 
-//--------Variables-------//
-
+//-------Begin Script-------//
 $(document).ready(function () {
 
+
+//Question Objects
 var Q1 = {
     question: "Relative to it's weight, which big cat has the strongest bite?",
     a: "Tiger",
@@ -119,9 +120,10 @@ var Q10 = {
     answer: "Virginia"
 }
 
+//Game variables
 questionArray = [Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10]
 
-var gameOver = false;
+var gameOver = true;
 
 var points = 0;
 
@@ -157,8 +159,6 @@ count: function() {
     timesUp();
 }}
 };
-
-
 
 //Triggers the timesUp screen when 30 seconds passes without answering
 function timesUp(){
@@ -197,13 +197,12 @@ function nextQuestion(inputQuestion){
 
 //Starts the game
 $("#play").on("click", function(){
+    gameOver = false;
     nextQuestion(currentQuestion);
     $("#triviaTitle").hide();
     $("#play").hide();
     $("#instructions").hide();
     writeQuestion();
-    console.log(newQuestion);
-    console.log(currentQuestion);
     timer.reset();
 });
 
@@ -273,9 +272,7 @@ function wrongAnswer(){
 
 //Answer clicking logic - logs a point if correct and advances to next question, unless last question
 $("body").on("click", ".answer", function(){
-    console.log('current Question='+currentQuestion);
     var answerClicked= $(this).text();
-    console.log(answerClicked);
     if(newQuestion == Q10 && answerClicked == Q10.answer){
         points++;
         $(".question").hide();
@@ -295,7 +292,6 @@ $("body").on("click", ".answer", function(){
         $(".answer").hide();
         $(".spacing").hide();
         correctAnswer();
-        console.log(points);
     }
     else{
         $(".question").hide();
@@ -315,8 +311,6 @@ function endGame(){
     $(".jumbotron").append("<h1 class='display-4 thanks'><center>Thanks for playing!</center></h1><br class='spacing'>" );
     $(".jumbotron").append("<center><div class='score'>You scored "+points+"/10 points!</div></center><br class='spacing'>");
     $(".jumbotron").append("<center><a class='btn btn-primary btn-lg again' href='#' role='button'>Play again?</a></center>");
-    console.log(timer.time);
-    console.log("gameover: "+gameOver);
 }
 
 //Button to restart the game
@@ -327,7 +321,6 @@ $("body").on("click", ".again", function(){
 //Restarts a game by clicking the again button above
 function restartGame(){
     clearInterval(intervalID);
-    gameOver = false;
     $(".thanks").remove();
     $(".score").remove();
     $(".again").remove();
@@ -340,3 +333,4 @@ function restartGame(){
 }
 
 });
+//-------End Script---------//
