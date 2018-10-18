@@ -158,6 +158,8 @@ count: function() {
 }}
 };
 
+
+
 //Triggers the timesUp screen when 30 seconds passes without answering
 function timesUp(){
     $("#timer").hide();
@@ -305,6 +307,7 @@ $("body").on("click", ".answer", function(){
 
 //Ends the game after answering all of the questions
 function endGame(){
+    clearInterval(intervalID);
     gameOver = true;
     $(".realAnswer").hide();
     $(".correct").hide();
@@ -312,6 +315,8 @@ function endGame(){
     $(".jumbotron").append("<h1 class='display-4 thanks'><center>Thanks for playing!</center></h1><br class='spacing'>" );
     $(".jumbotron").append("<center><div class='score'>You scored "+points+"/10 points!</div></center><br class='spacing'>");
     $(".jumbotron").append("<center><a class='btn btn-primary btn-lg again' href='#' role='button'>Play again?</a></center>");
+    console.log(timer.time);
+    console.log("gameover: "+gameOver);
 }
 
 //Button to restart the game
@@ -321,6 +326,8 @@ $("body").on("click", ".again", function(){
 
 //Restarts a game by clicking the again button above
 function restartGame(){
+    clearInterval(intervalID);
+    gameOver = false;
     $(".thanks").remove();
     $(".score").remove();
     $(".again").remove();
@@ -330,7 +337,6 @@ function restartGame(){
     $("#instructions").show();
     points = 0;
     currentQuestion = -1;
-    gameOver = false;
 }
 
 });
