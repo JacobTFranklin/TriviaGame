@@ -322,7 +322,7 @@ $("body").on("click", ".again", function(){
 //Restarts a game by clicking the again button above
 function restartGame(){
     $(".thanks").remove();
-    $(".score").remvoe();
+    $(".score").remove();
     $(".again").remove();
     $(".spacing").hide();
     $("#triviaTitle").show();
