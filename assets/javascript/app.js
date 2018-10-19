@@ -160,7 +160,7 @@ count: function() {
 }}
 };
 
-//Triggers the timesUp screen when 30 seconds passes without answering
+//Triggers the timesUp screen when 10 seconds passes without answering
 function timesUp(){
     $("#timer").hide();
     $(".question").hide();
@@ -223,6 +223,41 @@ function writeQuestion(){
     $(".jumbotron").append("<center><a class='btn btn-primary btn-sm answer' href='#' role='button'>" +newQuestion.d+ "</a></center>");
 };
 
+//Answer clicking logic - logs a point if correct and advances to next question, unless last question
+$("body").on("click", ".answer", function(){
+    var answerClicked= $(this).text();
+    if(newQuestion == Q10 && answerClicked == Q10.answer){
+        points++;
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        timer.reset();
+        correctAnswer();
+    }
+    else if(newQuestion == Q10 && answerClicked != Q10.answer){
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        timer.reset();
+        wrongAnswer();
+    }
+    else if(answerClicked == newQuestion.answer){
+        points++;
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        timer.reset();
+        correctAnswer();
+    }
+    else{
+        $(".question").hide();
+        $(".answer").hide();
+        $(".spacing").hide();
+        timer.reset();
+        wrongAnswer();
+    }
+})
+
 //Displays "correct" message after answering a question correctly
 function correctAnswer(){
     if(newQuestion == Q10){
@@ -269,37 +304,6 @@ function wrongAnswer(){
     }, 3000)
 } 
 };
-
-//Answer clicking logic - logs a point if correct and advances to next question, unless last question
-$("body").on("click", ".answer", function(){
-    var answerClicked= $(this).text();
-    if(newQuestion == Q10 && answerClicked == Q10.answer){
-        points++;
-        $(".question").hide();
-        $(".answer").hide();
-        $(".spacing").hide();
-        correctAnswer();
-    }
-    else if(newQuestion == Q10 && answerClicked != Q10.answer){
-        $(".question").hide();
-        $(".answer").hide();
-        $(".spacing").hide();
-        wrongAnswer();
-    }
-    else if(answerClicked == newQuestion.answer){
-        points++;
-        $(".question").hide();
-        $(".answer").hide();
-        $(".spacing").hide();
-        correctAnswer();
-    }
-    else{
-        $(".question").hide();
-        $(".answer").hide();
-        $(".spacing").hide();
-        wrongAnswer();
-    }
-})
 
 //Ends the game after answering all of the questions
 function endGame(){
